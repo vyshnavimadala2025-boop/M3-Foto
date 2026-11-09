@@ -1,0 +1,296 @@
+@import "tailwindcss";
+
+/* ───────────────────────── M3 FOTO design tokens ───────────────────────── */
+@theme {
+  /* Colour — strictly monochrome, per the brand brief */
+  --color-ink: #000000;          /* primary: deep black */
+  --color-charcoal: #171717;     /* secondary */
+  --color-graphite: #0b0b0b;     /* page background */
+  --color-surface: #111111;
+  --color-paper: #ffffff;        /* primary typography */
+  --color-mist: #a3a3a3;         /* secondary typography */
+  --color-line: #292929;         /* borders */
+  --color-silver: #c8c8c8;       /* hairline accents, focus */
+  --color-steel: #858585;        /* tertiary meta text — 5.3:1 on graphite, AA at small sizes */
+
+  /* Type */
+  --font-display: var(--font-instrument-serif), "Times New Roman", serif;
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --text-micro: 0.6875rem;
+  --text-micro--letter-spacing: 0.18em;
+  --text-micro--line-height: 1.4;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.5;
+
+  /* Motion */
+  --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-film: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* Layout */
+  --spacing-gutter: clamp(1.25rem, 4vw, 4rem);
+  --breakpoint-3xl: 112rem;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+@layer base {
+  :root {
+    color-scheme: dark;
+    --header-h: 4.5rem;
+    --display-xl: clamp(3.6rem, 13vw, 14rem);
+    --display-l: clamp(2.8rem, 8vw, 9rem);
+    --display-m: clamp(2.2rem, 5vw, 5rem);
+  }
+
+  html {
+    background: var(--color-graphite);
+    color: var(--color-paper);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    overflow-x: clip;
+    min-height: 100svh;
+  }
+
+  ::selection {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-silver);
+    outline-offset: 4px;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    display: block;
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+
+  /* Cursor is replaced only where a fine pointer exists and motion is allowed */
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    html.has-custom-cursor,
+    html.has-custom-cursor a,
+    html.has-custom-cursor button {
+      cursor: none;
+    }
+  }
+}
+
+/* ───────────────────────── Utilities ───────────────────────── */
+@utility display-xl {
+  font-family: var(--font-display);
+  font-size: var(--display-xl);
+  line-height: 0.86;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+}
+@utility display-l {
+  font-family: var(--font-display);
+  font-size: var(--display-l);
+  line-height: 0.9;
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+@utility display-m {
+  font-family: var(--font-display);
+  font-size: var(--display-m);
+  line-height: 0.98;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+/* Small-caps labels echo the logo's widely tracked "F O T O" and tagline */
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-micro);
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+@utility px-gutter {
+  padding-inline: var(--spacing-gutter);
+}
+@utility hairline {
+  height: 1px;
+  background: var(--color-line);
+}
+@utility text-balance {
+  text-wrap: balance;
+}
+@utility text-pretty {
+  text-wrap: pretty;
+}
+
+/* Line masks produced by SplitText */
+.line-mask {
+  overflow: clip;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* Film grain */
+.grain {
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  z-index: 90;
+  background-image: url("/textures/grain.webp");
+  background-size: 192px 192px;
+  opacity: 0.055;
+  animation: grain 0.9s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -4%); }
+  60% { transform: translate(-4%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Marquee */
+.marquee-track {
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+  animation-direction: var(--marquee-direction, normal);
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* Scroll cue */
+.scroll-cue::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-paper);
+  transform-origin: top;
+  animation: scroll-cue 2.4s var(--ease-film) infinite;
+}
+@keyframes scroll-cue {
+  0% { transform: scaleY(0); transform-origin: top; }
+  45% { transform: scaleY(1); transform-origin: top; }
+  55% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* Underline link */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.6s var(--ease-expo);
+}
+.link-underline:hover,
+.link-underline:focus-visible {
+  background-size: 100% 1px;
+  background-position: 0% 100%;
+}
+
+/* Hidden until JS takes over animation; never hidden without JS or with reduced motion */
+html.js-motion [data-reveal] {
+  visibility: hidden;
+  /* Safety net: never leave text hidden if scripts fail to load */
+  animation: reveal-fallback 0s 5s forwards;
+}
+@keyframes reveal-fallback {
+  to { visibility: visible; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .grain {
+    animation: none;
+  }
+  html.js-motion [data-reveal] {
+    visibility: visible;
+  }
+}
+
+/* ───────────────────────── Hero pre-paint states ─────────────────────────
+   Applied only while JS motion is enabled and before the hero timeline takes over,
+   so the first paint already matches frame one of the animation (no flash). */
+[data-hero-intro] {
+  display: none;
+}
+html.js-motion:not(.hero-ready):not(.intro-seen) [data-hero-intro] {
+  display: flex;
+}
+html.js-motion:not(.hero-ready):has([data-hero]) [data-site-header] {
+  opacity: 0;
+}
+html.js-motion:not(.hero-ready) [data-hero-frame] {
+  clip-path: inset(50% 0% 50% 0%);
+}
+/* Short opening (phones, return visits): first paint is already the cinemascope slit */
+html.js-motion.intro-seen:not(.hero-ready) [data-hero-frame] {
+  clip-path: inset(37% 0% 37% 0%);
+}
+html.js-motion:not(.hero-ready) [data-hero-line] {
+  transform: translateY(110%);
+}
+html.js-motion:not(.hero-ready) [data-hero-fade] {
+  opacity: 0;
+}
+/* Safety net: if scripts fail to load, show everything after 4s */
+html.js-motion:not(.hero-ready) [data-hero-intro],
+html.js-motion:not(.hero-ready) [data-hero-frame],
+html.js-motion:not(.hero-ready) [data-hero-line],
+html.js-motion:not(.hero-ready) [data-hero-fade],
+html.js-motion:not(.hero-ready):has([data-hero]) [data-site-header] {
+  animation: hero-fallback 0.6s 4s forwards;
+}
+html.js-motion:not(.hero-ready) [data-hero-intro] {
+  animation-name: hero-fallback-out;
+}
+@keyframes hero-fallback {
+  to { clip-path: inset(0% 0% 0% 0%); transform: none; opacity: 1; }
+}
+@keyframes hero-fallback-out {
+  to { opacity: 0; visibility: hidden; }
+}
+
+@keyframes caption-in {
+  from { transform: translateY(105%); }
+  to { transform: translateY(0); }
+}
+.caption-in {
+  animation: caption-in 0.9s var(--ease-expo) both;
+}
